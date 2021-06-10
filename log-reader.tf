@@ -1,5 +1,5 @@
 resource "aws_iam_user" "log_reader" {
-  name = "log-reader-${local.resource_name}"
+  name = "log-reader-${var.name}"
   tags = var.tags
 }
 
