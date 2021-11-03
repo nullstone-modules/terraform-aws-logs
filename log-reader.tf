@@ -1,5 +1,12 @@
+locals {
+  # The log reader name must be /aws/lambda/{function_name} to properly capture lambda logs
+  # However, a username cannot contain '/'.
+  # Let's drop `/aws/lambda/` from the name to create a safe user name
+  safe_username = replace(var.name, "/aws/lambda/", "")
+}
+
 resource "aws_iam_user" "log_reader" {
-  name = "log-reader-${var.name}"
+  name = "log-reader-${local.safe_username}"
   tags = var.tags
 }
 
