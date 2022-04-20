@@ -10,7 +10,7 @@ output "name" {
 
 output "reader" {
   value = {
-    name = try(aws_iam_user.log_reader.name, "")
+    name       = try(aws_iam_user.log_reader.name, "")
     access_key = try(aws_iam_access_key.log_reader.id, "")
     secret_key = try(aws_iam_access_key.log_reader.secret, "")
   }
