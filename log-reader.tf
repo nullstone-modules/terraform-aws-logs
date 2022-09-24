@@ -2,7 +2,7 @@ locals {
   # The log reader name must be /aws/lambda/{function_name} to properly capture lambda logs
   #   However, a username cannot contain '/'.
   #   Let's drop `/aws/lambda/` from the name to create a safe user name
-  safe_username = trimprefix(var.name, "/aws/lambda/")
+  safe_username = replace(trimprefix(var.name, "/aws/"), "/", "-")
 }
 
 resource "aws_iam_user" "log_reader" {
