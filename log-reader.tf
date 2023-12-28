@@ -38,4 +38,20 @@ data "aws_iam_policy_document" "log_reader" {
       "${aws_cloudwatch_log_group.this.arn}:log-stream:*"
     ]
   }
+
+  dynamic "statement" {
+    for_each = var.enable_get_metrics ? [""] : []
+
+    content {
+      sid       = "AllowGetMetrics"
+      effect    = "Allow"
+      resources = ["*"] // Metrics cannot be restricted by resource
+
+      actions = [
+        "cloudwatch:GetMetricData",
+        "cloudwatch:GetMetricStatistics",
+        "cloudwatch:ListMetrics",
+      ]
+    }
+  }
 }

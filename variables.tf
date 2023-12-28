@@ -14,6 +14,12 @@ variable "enable_log_reader" {
   default     = false
 }
 
+variable "enable_get_metrics" {
+  description = "Set to true to enable permissions on the log reader to get metric data"
+  type        = bool
+  default     = false
+}
+
 variable "kms_key_arn" {
   type        = string
   default     = null
