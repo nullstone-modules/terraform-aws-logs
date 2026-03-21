@@ -8,16 +8,22 @@ locals {
 resource "aws_iam_user" "log_reader" {
   name = "log-reader-${local.safe_username}"
   tags = var.tags
+
+  count = var.log_reader_type == "user" ? 1 : 0
 }
 
 resource "aws_iam_access_key" "log_reader" {
-  user = aws_iam_user.log_reader.name
+  user = aws_iam_user.log_reader[count.index].name
+
+  count = var.log_reader_type == "user" ? 1 : 0
 }
 
 resource "aws_iam_user_policy" "log_reader" {
   name   = "AllowReadLogs"
-  user   = aws_iam_user.log_reader.name
+  user   = aws_iam_user.log_reader[count.index].name
   policy = data.aws_iam_policy_document.log_reader.json
+
+  count = var.log_reader_type == "user" ? 1 : 0
 }
 
 data "aws_iam_policy_document" "log_reader" {
@@ -54,4 +60,37 @@ data "aws_iam_policy_document" "log_reader" {
       ]
     }
   }
+}
+
+resource "aws_iam_role" "log_reader" {
+  name               = "log-reader-${local.safe_username}"
+  assume_role_policy = data.aws_iam_policy_document.log_reader_assume.json
+  tags               = var.tags
+
+  count = var.log_reader_type == "role" ? 1 : 0
+}
+
+data "aws_iam_policy_document" "log_reader_assume" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "sts:AssumeRole",
+      "sts:SetSourceIdentity",
+      "sts:TagSession",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = var.log_reader_role_principals
+    }
+  }
+}
+
+resource "aws_iam_role_policy" "log_reader" {
+  name   = "AllowReadLogs"
+  role   = aws_iam_role.log_reader[count.index].name
+  policy = data.aws_iam_policy_document.log_reader.json
+
+  count = var.log_reader_type == "role" ? 1 : 0
 }

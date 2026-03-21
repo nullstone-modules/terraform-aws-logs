@@ -8,10 +8,27 @@ variable "tags" {
   type        = map(string)
 }
 
-variable "enable_log_reader" {
-  description = "Set to true to create an AWS user that has explicit permissions to read the created log group"
-  type        = bool
-  default     = false
+variable "log_reader_type" {
+  type        = string
+  default     = "user"
+  description = <<EOF
+One of "user" or "role".
+This will determine whether to create a log reader IAM user or IAM role.
+This IAM identity has explicit permissions to read the created log group
+EOF
+
+  validation {
+    condition     = contains(["user", "role"], var.log_reader_type)
+    error_message = "log_reader_type must be one of 'user' or 'role'"
+  }
+}
+
+variable "log_reader_role_principals" {
+  type        = set(string)
+  default     = []
+  description = <<EOF
+This is a set of AWS ARNs describing AWS principals that are allowed to assume this log reader.
+EOF
 }
 
 variable "enable_get_metrics" {
