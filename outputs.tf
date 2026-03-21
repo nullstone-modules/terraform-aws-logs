@@ -10,10 +10,10 @@ output "name" {
 
 output "reader" {
   value = {
-    name       = try(aws_iam_user.log_reader[count.index].name, "")
-    access_key = try(aws_iam_access_key.log_reader[count.index].id, "")
-    secret_key = try(aws_iam_access_key.log_reader[count.index].secret, "")
-    role_arn   = try(aws_iam_role.log_reader[count.index].arn, "")
+    name       = try(aws_iam_user.log_reader[0].name, "")
+    access_key = try(aws_iam_access_key.log_reader[0].id, "")
+    secret_key = try(aws_iam_access_key.log_reader[0].secret, "")
+    role_arn   = try(aws_iam_role.log_reader[0].arn, "")
   }
 
   description = "An AWS User or Role with explicit privilege to read logs from Cloudwatch."
