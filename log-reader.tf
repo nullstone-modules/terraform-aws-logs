@@ -37,11 +37,30 @@ data "aws_iam_policy_document" "log_reader" {
       "logs:StartQuery",
       "logs:StopQuery",
       "logs:TestMetricFilter",
-      "logs:Filter*"
+      "logs:Filter*",
     ]
 
     resources = [
       "${aws_cloudwatch_log_group.this.arn}:log-stream:*"
+    ]
+  }
+
+  statement {
+    sid    = "AllowLogGroupAccess"
+    effect = "Allow"
+
+    actions = [
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+      "logs:GetLogEvents",
+      "logs:FilterLogEvents",
+      "logs:StartLiveTail",
+      "logs:StopLiveTail",
+    ]
+
+    resources = [
+      aws_cloudwatch_log_group.this.arn,
+      "${aws_cloudwatch_log_group.this.arn}:*",
     ]
   }
 
