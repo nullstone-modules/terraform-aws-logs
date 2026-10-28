@@ -20,3 +20,12 @@ output "reader" {
 
   sensitive = true
 }
+
+output "reader_role_arn" {
+  value       = try(aws_iam_role.log_reader[0].arn, "")
+  description = <<EOT
+ARN of the log reader IAM Role when `log_reader_type = "role"`; empty string otherwise.
+This output is not sensitive so that consumers can expose the role for AssumeRole without
+inheriting the sensitivity of `reader` (which also carries IAM User access keys).
+EOT
+}
